@@ -42,11 +42,11 @@ class Help_processing:
 
         for filename in self.file_names:
             if filename.startswith('CLMET3'):
-                with open(file, 'r', encoding='utf-8') as f:
+                with open(filename, 'r', encoding='utf-8') as f:
                     text = f.read()
                     # Get the text ID (from filename)
                     # To do this, replace the '.txt' part of the file name with nothing
-                    text_id = file.replace('.txt', '')
+                    text_id = filename.replace('.txt', '')
 
                     # Extract metadata using regex
                     # For this, use re.search(). It's like findall(), but only returns the first match.

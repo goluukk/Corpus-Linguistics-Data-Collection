@@ -74,53 +74,56 @@ class Help_processing:
 
             elif filename.startswith('18'):
             # Create dictionary for metadata
-                self.HUM19UK_metadata = {}
-                lines = text.split("\n")  # Split text by lines
-                metadata = {
-                        'text_title': 'Unknown',
-                        'year': 'Unknown',
-                        'author_name': 'Unknown',
-                        'author_gender': 'Unknown',
-                        'genre': 'Fiction',
-                        'mode': 'Written',
-                        'variety': 'BrE',
-                        'corpus': 'HUM19UK'
-                    }
+                with open(filename, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                    text_id = filename.replace('.txt', '')
+                
+                    lines = text.split("\n")  # Split text by lines
+                    self.HUM19UK_metadata[text_id] = {
+                                                        'text_title': 'Unknown',
+                                                        'year': 'Unknown',
+                                                        'author_name': 'Unknown',
+                                                        'author_gender': 'Unknown',
+                                                        'genre': 'Fiction',
+                                                        'mode': 'Written',
+                                                        'variety': 'BrE',
+                                                        'corpus': 'HUM19UK'
+                                                    }
 
-            # Example: Assume metadata is in the first few lines in format "Key: Value"
-                for line in lines[:10]:  # Read only first 10 lines (adjust if needed)
-                    line = line.replace(">", "").strip()  # Remove ">" if it exists
-                    if "Title:" in line:
-                        metadata['text_title'] = line.split("Title:")[-1].strip()
-                    elif "Author:" in line:
-                        metadata['author_name'] = line.split("Author:")[-1].strip()
-                    elif "Publication date:" in line:
-                        metadata['year'] = line.split(":")[-1].strip()
-                    elif "Gender:" in line:
-                        metadata['author_gender'] = line.split("Gender:")[-1].strip()
-                    elif "Genre:" in line:
-                        metadata['genre'] = line.split("Genre:")[-1].strip()
-                    elif "Mode:" in line:
-                        metadata['mode'] = line.split("Mode:")[-1].strip()
-                    elif "Variety:" in line:
-                        metadata['variety'] = line.split("Variety:")[-1].strip()
+                # Example: Assume metadata is in the first few lines in format "Key: Value"
+                    for line in lines[:10]:  # Read only first 10 lines (adjust if needed)
+                        line = line.replace(">", "").strip()  # Remove ">" if it exists
+                        if "Title:" in line:
+                            self.HUM19UK_metadata['text_title'] = line.split("Title:")[-1].strip()
+                        elif "Author:" in line:
+                            self.HUM19UK_metadata['author_name'] = line.split("Author:")[-1].strip()
+                        elif "Publication date:" in line:
+                            self.HUM19UK_metadata['year'] = line.split(":")[-1].strip()
+                        elif "Gender:" in line:
+                            self.HUM19UK_metadata['author_gender'] = line.split("Gender:")[-1].strip()
+                        elif "Genre:" in line:
+                            self.HUM19UK_metadata['genre'] = line.split("Genre:")[-1].strip()
+                        elif "Mode:" in line:
+                            self.HUM19UK_metadata['mode'] = line.split("Mode:")[-1].strip()
+                        elif "Variety:" in line:
+                            self.HUM19UK_metadata['variety'] = line.split("Variety:")[-1].strip()
 
-                return metadata
+                    return self.HUM19UK_metadata
 
 
-                # Read each file and extract metadata
-                for filename in filenames:
-                    with open(filename, 'r', encoding='ISO-8859-1') as text:
-                        content = text.read()
-                        metadata = extract_metadata(content)  # Extract metadata from text
+                # # Read each file and extract metadata
+                # for filename in filenames:
+                #     with open(filename, 'r', encoding='ISO-8859-1') as text:
+                #         content = text.read()
+                #         metadata = extract_metadata(content)  # Extract metadata from text
 
-                        text_metadata[filename] = {
-                            'conc_index': concordance_indices.get(filename, None),  # Avoid KeyError
-                            **metadata  # Merge extracted metadata into dictionary
-                        }
+                #         text_metadata[filename] = {
+                #             'conc_index': concordance_indices.get(filename, None),  # Avoid KeyError
+                #             **metadata  # Merge extracted metadata into dictionary
+                #         }
 
-                    # Debugging: Print metadata to check extraction
-                    print(f"Metadata for {filename}: {text_metadata[filename]}")
+                #     # Debugging: Print metadata to check extraction
+                #     print(f"Metadata for {filename}: {text_metadata[filename]}")
                     
                         
                             

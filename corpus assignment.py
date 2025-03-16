@@ -124,8 +124,8 @@ class Help_processing:
                     
                         
                             
-                            #all files starting with an @ symbol are from the TenIndivCorpus
-                            #
+            
+            #all files starting with an @ symbol are from the TenIndivCorpus                
             elif filename.startswith('@'):
                 info = filename.split('@')
 

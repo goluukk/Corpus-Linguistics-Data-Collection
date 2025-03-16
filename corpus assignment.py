@@ -74,7 +74,7 @@ class Help_processing:
 
             elif filename.startswith('18'):
             # Create dictionary for metadata
-                text_metadata = {}
+                self.HUM19UK_metadata = {}
                 lines = text.split("\n")  # Split text by lines
                 metadata = {
                         'text_title': 'Unknown',
@@ -89,7 +89,7 @@ class Help_processing:
 
             # Example: Assume metadata is in the first few lines in format "Key: Value"
                 for line in lines[:10]:  # Read only first 10 lines (adjust if needed)
-                    line = line.replace(">", "").strip()  # 🚀 Remove ">" if it exists
+                    line = line.replace(">", "").strip()  # Remove ">" if it exists
                     if "Title:" in line:
                         metadata['text_title'] = line.split("Title:")[-1].strip()
                     elif "Author:" in line:

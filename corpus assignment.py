@@ -33,7 +33,7 @@ class Help_processing:
         # Tokenise each text and store with same filename as key
         for filename in all_text: 
             self.all_text_tokenized[filename] = word_tokenize(all_text[filename])
-
+#saldalsfc oajlsbc alsbcalwscb
 
     def generate_metadata(self):
         for filename in self.all_text_tokenized:

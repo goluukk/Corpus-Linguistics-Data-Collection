@@ -4,7 +4,6 @@ from nltk import word_tokenize
 from nltk.text import ConcordanceIndex
 nltk.download('punkt')
 nltk.download('punkt_tab')
-import re
 
 class Help_processing:
 
@@ -34,6 +33,7 @@ class Help_processing:
         # Tokenise each text and store with same filename as key
         for filename in all_text: 
             self.all_text_tokenized[filename] = word_tokenize(all_text[filename])
+#saldalsfc oajlsbc alsbcalwscb
 
     def generate_metadata(self):
         for filename in self.all_text_tokenized:
@@ -41,38 +41,62 @@ class Help_processing:
 
         for filename in self.file_names:
             if filename.startswith('CLMET3'):
-                with open(file, 'r', encoding='utf-8') as f:
-                    text = f.read()
-                    # Get the text ID (from filename)
-                    # To do this, replace the '.txt' part of the file name with nothing
-                    text_id = file.replace('.txt', '')
-
-                    # Extract metadata using regex
-                    # For this, use re.search(). It's like findall(), but only returns the first match.
-                    # Save the information we want in a capturing group
-                    # Then output the capturing group by adding .group(1) at the end of the
-                    id = re.search(r'<id>(.*?)</id>', text).group(1)
-                    title = re.search(r'<title>(.*?)</title>', text).group(1)
-                    year = re.search(r'<date of text>(.*?)</date of text>', text).group(1)
-                    author = re.search(r'<author>(.*?)</author>', text).group(1)
-                    gender = re.search(r"<author's gender>(.*?)</author's gender>", text).group(1)
-                    genre = re.search(r'<genre>(.*?)</genre>', text).group(1)
-
-                    # Store in metadata dictionary
-                    self.CLMET_metadata[text_id] = {
-                        'ID': id,
-                        'Title': title,
-                        'Year': year,
-                        'Author': author,
-                        'Gender': gender,
-                        'Genre': genre,
-                        'Mode': 'Written',
-                        'Variety': 'BrE',
-                        'Corpus': 'CLMET-3'
-                    }
 
             elif filename.startswith('18'):
+            # Create dictionary for metadata
+text_metadata = {}
 
+# Function to extract metadata from text
+def extract_metadata(text):
+    """Extracts metadata from the first few lines of a text file."""
+    lines = text.split("\n")  # Split text by lines
+    metadata = {
+        'text_title': 'Unknown',
+        'year': 'Unknown',
+        'author_name': 'Unknown',
+        'author_gender': 'Unknown',
+        'genre': 'Fiction',
+        'mode': 'Written',
+        'variety': 'BrE',
+        'corpus': 'HUM19UK'
+    }
+
+    # Example: Assume metadata is in the first few lines in format "Key: Value"
+    for line in lines[:10]:  # Read only first 10 lines (adjust if needed)
+        line = line.replace(">", "").strip()  # 🚀 Remove ">" if it exists
+        if "Title:" in line:
+            metadata['text_title'] = line.split("Title:")[-1].strip()
+        elif "Author:" in line:
+            metadata['author_name'] = line.split("Author:")[-1].strip()
+        elif "Publication date:" in line:
+            metadata['year'] = line.split(":")[-1].strip()
+        elif "Gender:" in line:
+            metadata['author_gender'] = line.split("Gender:")[-1].strip()
+        elif "Genre:" in line:
+            metadata['genre'] = line.split("Genre:")[-1].strip()
+        elif "Mode:" in line:
+            metadata['mode'] = line.split("Mode:")[-1].strip()
+        elif "Variety:" in line:
+            metadata['variety'] = line.split("Variety:")[-1].strip()
+
+    return metadata
+
+
+# Read each file and extract metadata
+for filename in filenames:
+    with open(filename, 'r', encoding='ISO-8859-1') as text:
+        content = text.read()
+        metadata = extract_metadata(content)  # Extract metadata from text
+
+        text_metadata[filename] = {
+            'conc_index': concordance_indices.get(filename, None),  # Avoid KeyError
+            **metadata  # Merge extracted metadata into dictionary
+        }
+
+    # Debugging: Print metadata to check extraction
+    print(f"Metadata for {filename}: {text_metadata[filename]}")
+    
+        
             
             #all files starting with an @ symbol are from the TenIndivCorpus
             #

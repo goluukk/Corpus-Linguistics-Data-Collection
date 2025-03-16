@@ -154,3 +154,16 @@ class Help_processing:
             else: 
                 print(filename)
                 raise RuntimeError("Filename unaccounted for: not in CLMET3, HUM19UK, or TenIndivCorpus format")
+            
+    def find_help(self, corpus_name): 
+        #tells function which metadata to use based on the corpus name in parameters
+        if corpus_name == 'HUM19UK':
+            corpus_metadata = self.HUM19UK_metadata
+        elif corpus_name == 'CLMET3':
+            corpus_metadata = self.CLMET_metadata
+        elif corpus_name == 'TenIndivCorpus':
+            corpus_metadata == self.TenIndivCorpus_metadata
+        else:
+            print(corpus_name)
+            raise ValueError("Corpus title unrecognised: please use HUM19UK, CLMET3, or TenIndivCorpus.")
+     

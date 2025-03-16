@@ -38,6 +38,7 @@ class Help_processing:
     def generate_metadata(self):
         for filename in self.all_text_tokenized:
             self.concordance_indices[filename] = ConcordanceIndex(self.all_text_tokenized[filename])
+
         for filename in self.file_names:
             if filename.startswith('CLMET3'):
 
@@ -62,7 +63,11 @@ class Help_processing:
                 'gender': info[8],
                 'macro_genre': info[9],
                 'micro_genre': info[10],
-                'word_count': info[11].replace('.txt', '')
+                'word_count': info[11].replace('.txt', ''),
+                'genre': 'fiction',
+                'mode': 'written',
+                'variety': 'BrE',
+                'corpus': 'TenIndivCorpus'
                 }
             else: 
                 print(filename)

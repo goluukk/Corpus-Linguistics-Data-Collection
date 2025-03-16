@@ -4,6 +4,7 @@ from nltk import word_tokenize
 from nltk.text import ConcordanceIndex
 nltk.download('punkt')
 nltk.download('punkt_tab')
+import re
 
 class Help_processing:
 
@@ -33,13 +34,42 @@ class Help_processing:
         # Tokenise each text and store with same filename as key
         for filename in all_text: 
             self.all_text_tokenized[filename] = word_tokenize(all_text[filename])
-#saldalsfc oajlsbc alsbcalwscb
+
 
     def generate_metadata(self):
         for filename in self.all_text_tokenized:
             self.concordance_indices[filename] = ConcordanceIndex(self.all_text_tokenized[filename])
         for filename in self.file_names:
             if filename.startswith('CLMET3'):
+                with open(file, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                    # Get the text ID (from filename)
+                    # To do this, replace the '.txt' part of the file name with nothing
+                    text_id = file.replace('.txt', '')
+
+                    # Extract metadata using regex
+                    # For this, use re.search(). It's like findall(), but only returns the first match.
+                    # Save the information we want in a capturing group
+                    # Then output the capturing group by adding .group(1) at the end of the
+                    id = re.search(r'<id>(.*?)</id>', text).group(1)
+                    title = re.search(r'<title>(.*?)</title>', text).group(1)
+                    year = re.search(r'<date of text>(.*?)</date of text>', text).group(1)
+                    author = re.search(r'<author>(.*?)</author>', text).group(1)
+                    gender = re.search(r"<author's gender>(.*?)</author's gender>", text).group(1)
+                    genre = re.search(r'<genre>(.*?)</genre>', text).group(1)
+
+                    # Store in metadata dictionary
+                    self.CLMET_metadata[text_id] = {
+                        'ID': id,
+                        'Title': title,
+                        'Year': year,
+                        'Author': author,
+                        'Gender': gender,
+                        'Genre': genre,
+                        'Mode': 'Written',
+                        'Variety': 'BrE',
+                        'Corpus': 'CLMET-3'
+                    }
 
             elif filename.startswith('18'):
             # Create dictionary for metadata

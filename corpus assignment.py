@@ -172,4 +172,51 @@ class Help_processing:
             #JUST A TEST TO SEE IF THE MERGE THING WORKS
 
 
-            #asgtjdrdkydt fckutf ktuk
+            #Codes for finding "help" (based on HUM19UK):
+
+            # List to store tuples of (hit_id, concordance, metadata)
+all_concordances = []
+
+# Define the search term
+search_term = "help"
+hit_id = 1  # Unique identifier for each instance
+
+# Loop through each text file and its metadata
+for filename, metadata in self.HUM19UK_metadata.items():
+    if "conc_index" not in metadata:
+        print(f"Warning: Missing 'conc_index' for {filename}")
+        continue  # Skip this entry if 'conc_index' is missing
+
+    concordance_index = metadata["conc_index"]  # The precomputed concordance index
+
+    # Get concordance lines directly
+    concordance_lines = concordance_index.find_concordance(search_term, width=90)
+
+    for line in concordance_lines:
+        # Extract KWIC text from ConcordanceLine object
+        kwic_context = f"{' '.join(line.left[-15:])} {line.query} {' '.join(line.right[:30])}"  # Ensure 15 before & 30 after
+
+        # Store extracted data
+        all_concordances.append(
+            (
+                hit_id,
+                kwic_context.strip(),  # Remove any accidental leading/trailing spaces
+                metadata.get("author_name", "Unknown"),
+                metadata.get("year", "Unknown"),
+                metadata.get("text_title", "Unknown"),
+                metadata.get("author_gender", "Unknown"),
+                metadata.get("genre", "Unknown"),
+                metadata.get("mode", "Unknown"),
+                metadata.get("variety", "Unknown"),
+                metadata.get("corpus", "Unknown"),
+            )
+        )
+        hit_id += 1  # Increment hit ID
+
+# Print the extracted concordance lines
+output = "Hit\tKWIC\tAuthor\tYear\tTitle\tGender\tGenre\tMode\tVariety\tCorpus\n"
+
+for record in all_concordances:
+    output += "\t".join(map(str, record)) + "\n"
+
+print(output)

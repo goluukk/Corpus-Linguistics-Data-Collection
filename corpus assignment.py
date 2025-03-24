@@ -61,8 +61,8 @@ class Help_processing:
 
                     # Store in metadata dictionary
                     self.CLMET_metadata[text_id] = {
-                        'ID': id,
-                        'Title': title,
+                        'TextID': id,
+                        'TextName': title,
                         'Year': year,
                         'Author': author,
                         'Gender': gender,
@@ -80,33 +80,27 @@ class Help_processing:
                 
                     lines = text.split("\n")  # Split text by lines
                     self.HUM19UK_metadata[text_id] = {
-                                                        'text_title': 'Unknown',
-                                                        'year': 'Unknown',
-                                                        'author_name': 'Unknown',
-                                                        'author_gender': 'Unknown',
-                                                        'genre': 'Fiction',
-                                                        'mode': 'Written',
-                                                        'variety': 'BrE',
-                                                        'corpus': 'HUM19UK'
+                                                        'TextName': 'Unknown',
+                                                        'Year': 'Unknown',
+                                                        'Author': 'Unknown',
+                                                        'AuthorGender': 'Unknown',
+                                                        'Genre': 'Fiction',
+                                                        'Mode': 'Written',
+                                                        'Variety': 'BrE',
+                                                        'Corpus': 'HUM19UK'
                                                     }
 
                 # Example: Assume metadata is in the first few lines in format "Key: Value"
                     for line in lines[:10]:  # Read only first 10 lines (adjust if needed)
                         line = line.replace(">", "").strip()  # Remove ">" if it exists
                         if "Title:" in line:
-                            self.HUM19UK_metadata['text_title'] = line.split("Title:")[-1].strip()
+                            self.HUM19UK_metadata['TextTitle'] = line.split("Title:")[-1].strip()
                         elif "Author:" in line:
-                            self.HUM19UK_metadata['author_name'] = line.split("Author:")[-1].strip()
+                            self.HUM19UK_metadata['Author'] = line.split("Author:")[-1].strip()
                         elif "Publication date:" in line:
-                            self.HUM19UK_metadata['year'] = line.split(":")[-1].strip()
+                            self.HUM19UK_metadata['Year'] = line.split(":")[-1].strip()
                         elif "Gender:" in line:
-                            self.HUM19UK_metadata['author_gender'] = line.split("Gender:")[-1].strip()
-                        elif "Genre:" in line:
-                            self.HUM19UK_metadata['genre'] = line.split("Genre:")[-1].strip()
-                        elif "Mode:" in line:
-                            self.HUM19UK_metadata['mode'] = line.split("Mode:")[-1].strip()
-                        elif "Variety:" in line:
-                            self.HUM19UK_metadata['variety'] = line.split("Variety:")[-1].strip()
+                            self.HUM19UK_metadata['AuthorGender'] = line.split("Gender:")[-1].strip()
 
                     return self.HUM19UK_metadata
 
@@ -135,21 +129,14 @@ class Help_processing:
                 self.TenIndivCorpus_metadata[filename] = {
                 'conc_index': self.concordance_indices[filename],
                 # for me, info[] is an empty string, so I start at 1
-                'author': info[1],
-                'birth_year': info[2],
-                'title': info[3],
-                'pub_year': info[4],
-                'place': info[5],
-                'latitude': info[6],
-                'longitude': info[7],
-                'gender': info[8],
-                'macro_genre': info[9],
-                'micro_genre': info[10],
-                'word_count': info[11].replace('.txt', ''),
-                'genre': 'fiction',
-                'mode': 'written',
-                'variety': 'BrE',
-                'corpus': 'TenIndivCorpus'
+                'Author': info[1],
+                'TextTitle': info[3],
+                'Year': info[4],
+                'AuthorGender': info[8],
+                'Genre': 'fiction',
+                'Mode': 'written',
+                'Variety': 'BrE',
+                'Corpus': 'TenIndivCorpus'
                 }
             else: 
                 print(filename)

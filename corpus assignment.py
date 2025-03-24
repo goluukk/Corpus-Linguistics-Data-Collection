@@ -9,9 +9,7 @@ import re
 class Help_processing:
 
     def __init__(self):
-        self.CLMET_metadata = {}
-        self.TenIndivCorpus_metadata = {}
-        self.HUM19UK_metadata = {}
+        self.metadata = {}
         self.all_text_tokenized = {}
         self.file_names = []
         self.concordance_indices = {}
@@ -37,9 +35,6 @@ class Help_processing:
 
 
     def generate_metadata(self):
-        for filename in self.all_text_tokenized:
-            self.concordance_indices[filename] = ConcordanceIndex(self.all_text_tokenized[filename])
-
         for filename in self.file_names:
             if filename.startswith('CLMET3'):
                 with open(filename, 'r', encoding='utf-8') as f:
@@ -60,7 +55,7 @@ class Help_processing:
                     genre = re.search(r'<genre>(.*?)</genre>', text).group(1)
 
                     # Store in metadata dictionary
-                    self.CLMET_metadata[text_id] = {
+                    self.metadata[text_id] = {
                         'TextID': id,
                         'TextName': title,
                         'Year': year,
@@ -79,7 +74,7 @@ class Help_processing:
                     text_id = filename.replace('.txt', '')
                 
                     lines = text.split("\n")  # Split text by lines
-                    self.HUM19UK_metadata[text_id] = {
+                    self.metadata[text_id] = {
                                                         'TextName': 'Unknown',
                                                         'Year': 'Unknown',
                                                         'Author': 'Unknown',
@@ -94,15 +89,13 @@ class Help_processing:
                     for line in lines[:10]:  # Read only first 10 lines (adjust if needed)
                         line = line.replace(">", "").strip()  # Remove ">" if it exists
                         if "Title:" in line:
-                            self.HUM19UK_metadata['TextTitle'] = line.split("Title:")[-1].strip()
+                            self.metadata['TextTitle'] = line.split("Title:")[-1].strip()
                         elif "Author:" in line:
-                            self.HUM19UK_metadata['Author'] = line.split("Author:")[-1].strip()
+                            self.metadata['Author'] = line.split("Author:")[-1].strip()
                         elif "Publication date:" in line:
-                            self.HUM19UK_metadata['Year'] = line.split(":")[-1].strip()
+                            self.metadata['Year'] = line.split(":")[-1].strip()
                         elif "Gender:" in line:
-                            self.HUM19UK_metadata['AuthorGender'] = line.split("Gender:")[-1].strip()
-
-                    return self.HUM19UK_metadata
+                            self.metadata['AuthorGender'] = line.split("Gender:")[-1].strip()
 
 
                 # # Read each file and extract metadata
@@ -126,7 +119,7 @@ class Help_processing:
             elif filename.startswith('@'):
                 info = filename.split('@')
 
-                self.TenIndivCorpus_metadata[filename] = {
+                self.metadata[filename] = {
                 'conc_index': self.concordance_indices[filename],
                 # for me, info[] is an empty string, so I start at 1
                 'Author': info[1],
@@ -141,19 +134,7 @@ class Help_processing:
             else: 
                 print(filename)
                 raise RuntimeError("Filename unaccounted for: not in CLMET3, HUM19UK, or TenIndivCorpus format")
+            return self.metadata
             
-    def find_help(self, corpus_name): 
-        #tells function which metadata to use based on the corpus name in parameters
-        if corpus_name == 'HUM19UK':
-            corpus_metadata = self.HUM19UK_metadata
-        elif corpus_name == 'CLMET3':
-            corpus_metadata = self.CLMET_metadata
-        elif corpus_name == 'TenIndivCorpus':
-            corpus_metadata == self.TenIndivCorpus_metadata
-        else:
-            print(corpus_name)
-            raise ValueError("Corpus title unrecognised: please use HUM19UK, CLMET3, or TenIndivCorpus.")
-     
-            
+    def find_help(self): 
 
-            #JUST A TEST TO SEE IF THE MERGE THING WORKS

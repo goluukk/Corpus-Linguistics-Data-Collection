@@ -5,6 +5,8 @@ from nltk.text import ConcordanceIndex
 nltk.download('punkt')
 nltk.download('punkt_tab')
 import re
+from tqdm import tqdm
+import pickle
 
 class Help_processing:
 
@@ -19,19 +21,31 @@ class Help_processing:
         #takes all file names ending with .txt and puts them in a list
         for file in glob.glob("*.txt"):
             self.file_names.append(file)
+        
+        print(self.file_names)
 
         #dict that stores name of file as key and text as value
         all_text = {}
 
         # Read each file
-        for filename in self.file_names:
-            with open(filename, 'r', encoding='utf8') as text:
+        for filename in tqdm(self.file_names):
+            with open(filename, 'r', encoding='ISO-8859-1') as text:
                 # Use filename as key in dictionary
                 all_text[filename] = text.read()
 
         # Tokenise each text and store with same filename as key
-        for filename in all_text: 
+        for filename in tqdm(all_text): 
             self.all_text_tokenized[filename] = word_tokenize(all_text[filename])
+        
+        with open('all_text_tokenized.pickle', 'wb') as handle:
+            pickle.dump(self.all_text_tokenized, handle, protocol = pickle.HIGHEST_PROTOCOL)
+        
+
+        print(self.all_text_tokenized)
+
+    def load_all_text_tokenized(self):
+        with open('all_text_tokenized.pickle', 'rb') as handle:
+            self.all_text_tokenized = pickle.load(handle)
 
 
     def generate_metadata(self):
@@ -136,5 +150,5 @@ class Help_processing:
                 raise RuntimeError("Filename unaccounted for: not in CLMET3, HUM19UK, or TenIndivCorpus format")
             return self.metadata
             
-    def find_help(self): 
+    # def find_help(self): 
 
